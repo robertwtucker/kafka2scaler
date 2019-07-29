@@ -29,7 +29,7 @@ This guide assumes that the following software is properly installed and configu
 * A **Java JDK for version 8** with the latest updates. At the time of this writing, that is 8u222-b10. Given the recent change in [Oracle's licensing terms for Java](https://www.oracle.com/technetwork/java/javase/terms/license/javase-license.html) releases, there are new restrictions around what activities are permitted and a lot of uncertainty around what constitues "development". As such, [Azul System's](https://www.azul.com) Zulu Community builds of OpenJDK provide a great cross-platform alternative. So, if you do not already have a JDK installed, see the [Zulu Community download page](https://www.azul.com/downloads/zulu-community/) to find the latest version 8 JDK for your platform.
 * **The [Gradle](https://gradle.org) Build Tool**. Having the latest version (5.5.1 as of this writing) is not critical. See the [Gradle installation instructions](https://gradle.org/install/) for instructions and links specific to your platform.
 * **Inspire Scaler** running locally and using default port (30600). A remote Scaler server will work as long as the appropriate host name and port are substituted where *localhost:30600* is used in the instructions. This guide was created and tested with Scaler v12.5.0.18-FMAP.
-* The **[Docker](https://docs.docker.com/) Community Engine** and the **[Docker Compose](https://docs.docker.com/compose/) tool** for defining and building multi-container Docker applications. This step is optional if you are not using the Docker [demo environment](#using-the-docker-demo-environment) described later in this document. See the multi-platform installation instructions available for the [Docker Engine](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/) tool, respectively. The latest stable version for your platform is recommended but any Docker Engine release after 17.12.0 should work (the compose file uses format version 3.5). This guide was prepared and tested with Docker Engine version 18.09.2 and Docker Compose version 1.23.2.
+* The **[Docker Engine](https://docs.docker.com/)** and the **[Docker Compose](https://docs.docker.com/compose/) tool** for defining and building multi-container Docker applications. This step is optional if you are not using the [Docker demo environment](#using-the-docker-demo-environment) described later in this document. See the multi-platform installation instructions available for the [Docker Engine](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/) tool, respectively. The latest stable version for your platform is recommended but any Docker Engine release after 17.12.0 should work (the compose file uses format version 3.5). This guide was prepared and tested with Docker Engine version 18.09.2 and Docker Compose version 1.23.2.
 * The latest binary download of **[Apache Kafka](https://kafka.apache.org/)** (currently 2.3.0). See the [Kafka download page](https://kafka.apache.org/downloads) for more information. If Docker is already installed, there is an option to use Docker images in lieu of installing Kafka. This is not recommended unless you are familiar with Docker and how networking and volume creation work.
 
 
@@ -44,16 +44,16 @@ In many cases, the Scaler workflow(s) we will need to integrate with (invoke) wi
   
    You can either drag and drop the components from the pallette to the canvas or just double-click them in the pallette to move them over. Once finished, make sure that the components are all linked together in the aforementioned order.
 
-![Scaler workflow components linked](/docs/images/scaler-workflow.png)
+![Scaler workflow components linked](docs/images/scaler-workflow.png)
 
 4. Edit the **HTTP Input** component. Enter *simplews* for the *URL Endpoint* and set the *API authentication group* to *no authentication*. Take note of the *Request URL*. We will need this information later in order to contact this workflow via HTTP. Be sure to click *OK* to close the component detail popup and not the *X* so that the changes made will be persisted in memory.
 
-![HTTP Input component](/docs/images/http-input.png)
+![HTTP Input component](docs/images/http-input.png)
 
 5. Open the **Script** component. In the *Variables* tab, click the *Required* checkbox for the *body* variable.
 6. Add a simple line of script, `console.info(getvar("body"))`, in the code area. This will allow us to see exactly what was passed to Scaler in the body of the HTTP request from the *Job* details once the request is completed. Click *OK* to close the window.
 
-![Script component](/docs/images/script-component.png)
+![Script component](docs/images/script-component.png)
 
 7. Edit the **HTTP Output** component, setting the *Response Type* to *Confirmation (HTTP 204)* before clicking *OK*.
 8. At this point, our workflow is complete. Click the *disk* icon in the toolbar to save all of the in-memory changes to the database and the *up and right arrow* nearby to publish the initial draft of the workflow as version 1. Click *OK* to confirm.
@@ -104,7 +104,7 @@ As mentioned previously, there is an option to use a Docker container based on t
 #### Create a Spring Boot project with Spring Initializr
 1. In the browser, navigate to the Spring Initializr at [https://start.spring.io](https://start.spring.io).
 
-![Spring Initializr](/docs/images/spring-initializr.png)
+![Spring Initializr](docs/images/spring-initializr.png)
 
 2. Choose *Gradle Project* as the type of project and leave the *Language* and *Spring Boot* settings at their default.
 3. Feel free to customize the name and description values in the *Project Metadata* section as appropriate. For the purposes of this walk-through, please do not change the *Packaging* or *Java* selections from *Jar* and *8*, respectively.
