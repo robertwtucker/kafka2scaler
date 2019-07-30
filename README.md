@@ -93,7 +93,7 @@ Open a console window or command prompt and switch to the directory you installe
 
 *Windows* 
 ```console
-> bin\\windows\\kafka-topics.bat --bootstrap-server localhost:9092 --create --topic inspire --replication-factor 1 --partitions 1
+> bin\windows\kafka-topics.bat --bootstrap-server localhost:9092 --create --topic inspire --replication-factor 1 --partitions 1
 ```
 
 If you would like to verify that the topic was properly created, you can use the command with the `--list` parameter and you should see `inspire` listed among the output.
@@ -105,7 +105,7 @@ If you would like to verify that the topic was properly created, you can use the
 
 *Windows* 
 ```console
-> bin\\windows\\kafka-topics.bat --bootstrap-server localhost:9092 --list
+> bin\windows\kafka-topics.bat --bootstrap-server localhost:9092 --list
 ```
 
 As mentioned previously, there is an option to use a Docker container based on the same Kafka image used for the demo environment in lieu of installing Kafka's binary distribution. For example, to create the topic in Kafka, you could execute the following:
