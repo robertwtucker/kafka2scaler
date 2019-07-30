@@ -26,16 +26,17 @@ Blurb on Camel
 
 Blurb on Spring
 
+
 ## How-To Guide
 
-The instructions in this section provide a step by step walk-through the process of creating and configuring a Spring Boot application using Apache Camel to provide a gateway to Inspire Scaler. A full copy of the completed project and its assets can be found LINK_HERE.
+The instructions in this section provide a step by step walk-through of creating and configuring a Spring Boot application using Apache Camel to provide a gateway to Inspire Scaler. A full copy of the completed project and its assets can be found LINK_HERE.
 
 
 ### Pre-requisites
 
 This guide assumes that the following software is properly installed and configured on the machine being used. For more information, please see the installation links provided.
 
-* A **Java JDK for version 8** with the latest updates. At the time of this writing, that is 8u222-b10. Given the recent change in [Oracle's licensing terms for Java](https://www.oracle.com/technetwork/java/javase/terms/license/javase-license.html) releases, there are new restrictions around what activities are permitted and a lot of uncertainty around what constitues "development". As such, [Azul System's](https://www.azul.com) Zulu Community builds of OpenJDK provide a great cross-platform alternative. So, if you do not already have a JDK installed, see the [Zulu Community download page](https://www.azul.com/downloads/zulu-community/) to find the latest version 8 JDK for your platform.
+* A **Java JDK for version 8** with the latest updates. At the time of this writing, that is 8u222-b10. Given the recent change in [Oracle's licensing terms for Java](https://www.oracle.com/technetwork/java/javase/terms/license/javase-license.html) releases, there are new restrictions around what is permissable under the license and this has created a lot of uncertainty (i.e. What activities qualify as "development?"). As such, [Azul System's](https://www.azul.com) Zulu Community builds of OpenJDK provide a great cross-platform alternative. So, if you do not already have a JDK installed, see the [Zulu Community download page](https://www.azul.com/downloads/zulu-community/) to find the latest version 8 JDK for your platform.
 
 * **Inspire Scaler** running locally and using default port (30600). A remote Scaler server will work as long as the appropriate host name and port are substituted where *localhost:30600* is used in the instructions. This guide was created and tested with Scaler v12.5.0.18-FMAP.
 
@@ -53,6 +54,7 @@ In many cases, the Scaler workflow(s) we will need to integrate with (invoke) wi
 2. Log in as an administrator and create a new *On Demand* workflow. Our example will be named *Simple Scaler Endpoint*.
 
 3. Using the workflow editor, add three Scaler workflow components in this order:
+   
    * HTTP Input
    * Script
    * HTTP Output
@@ -61,7 +63,7 @@ In many cases, the Scaler workflow(s) we will need to integrate with (invoke) wi
 
 ![Scaler workflow components linked](docs/images/scaler-workflow.png)
 
-4. Edit the **HTTP Input** component. Enter *simplews* for the *URL Endpoint* and set the *API authentication group* to *no authentication*. Take note of the *Request URL*. We will need this information later in order to contact this workflow via HTTP. Be sure to click *OK* to close the component detail popup and not the *X* so that the changes made will be persisted in memory.
+1. Edit the **HTTP Input** component. Enter *simplews* for the *URL Endpoint* and set the *API authentication group* to *no authentication*. Take note of the *Request URL*. We will need this information later in order to contact this workflow via HTTP. Be sure to click *OK* to close the component detail popup and not the *X* so that the changes made will be persisted in memory.
 
 ![HTTP Input component](docs/images/http-input.png)
 
@@ -114,7 +116,7 @@ As mentioned previously, there is an option to use a Docker container based on t
 >   --topic inspire --replication-factor 1 --partitions 1 
 ```
 
-**Important**: Because the [Confluent Platform](https://www.confluent.io/product/confluent-platform/) image for Kafka defines three volume mount-points, each time a `docker run` command using the image is executed, three new Docker volumes are created. Even though these volumes are very small in size, this can lead to the creation of plethora of Docker volumes without an associated container. In order to make sure that these are cleaned up, use a Docker command similar to the following (adjust as appropriate for your operating system):
+**Important**: Because the [Confluent Platform](https://www.confluent.io/product/confluent-platform/) Docker image for Kafka defines three volume mount-points, each time a `docker run` command using the image is executed, three new Docker volumes are created. Even though these volumes are very small in size, this can lead to the creation of plethora of Docker volumes without an associated container. In order to make sure that these are cleaned up, use a Docker command similar to the following (adjust as appropriate for your operating system):
 
 ```console
 > docker volume rm $(docker ls -qf dangling=true)
@@ -140,9 +142,27 @@ As mentioned previously, there is an option to use a Docker container based on t
 
 ### Configure Apache Camel
 
+It is now time to add the specific configuration and logic that will connect Kafka to Scaler. A full overview of Apache Camel and its configuration would be a significant document in its own right, so it will have to fall outside the scope of this guide.
 
 ### Build and Run the Application
 
+Using a console windows or command prompt, switch to the project's root directory. If all of the steps in the [previous section](#configure-apache-camel) were completed correctly, we should be able to build and run our application. Use the Gradle build tool provided with the project to compile the source files.
+
+```
+> ./gradlew build
+```
+
+Windows users can omit the `./` prefix on the command above. This is only required for MacOS and *nix platforms.
+
+If any errors are produced, recheck the changes made to the source files in the [previous section](#configure-apache-camel). Make sure the files have been saved before trying again.
+
+When the application is compiled, we can now use the Spring Boot plugin to run the application directly.
+
+```
+> ./gradlew bootRun
+```
+
+As the application starts, several information messages will be logged to the console. Once connected to Kafka, the application will wait for a message to be published in the `inspire` topic.
 
 ### Send a Message to Kafka
 
@@ -151,6 +171,7 @@ As mentioned previously, there is an option to use a Docker container based on t
 
 
 ## Using the Docker Demo Environment
+
 In order to provide ready access to a Kafka environment for testing this integration, a Docker Compose file that creates a single-node instance of Apache Kafka along with an Apache Zookeeper server is included with the project assets. The Zookeeper server is required by Kafka to support many of the distributed features (leader elections, partitions, etc.).
 
 To start the demo environment, from a console terminal or command window in the project root directory, execute:
@@ -160,6 +181,9 @@ To start the demo environment, from a console terminal or command window in the 
 
 This will create a network and start both server instances in *daemon* or background mode. By default, Kafka's primary listener will be bound to port `9092` of the host machine (`localhost:9092`). Because of the peculiarities of networking with Docker, a second listener has been configured to run on port `29092`. If you plan to connect to the demo Kafka server from another container (internal to Docker, on the `kafka-demo` network), you will need to use `kafka:29092` for the commands or parameters that require supplying the address of the Kafka broker.
 
+
 ## Areas for Further Study and/or Investigation
 
 ### Calling Scaler with Authentication Enabled
+
+### Create a Response Object in Scaler and Publish it to Kafka
