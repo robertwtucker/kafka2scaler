@@ -1,0 +1,16 @@
+camel:
+  springboot:
+    main-run-controller: true
+
+kafka:
+  brokers: localhost:9092
+  consumer:
+    topic: inspire
+    groupId: demo
+    seekTo: end
+
+http:
+  host: localhost
+  port: 30600
+  resourceUrl: /rest/api/submit-job/simplews
+  method: POST

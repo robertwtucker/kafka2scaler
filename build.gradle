@@ -15,5 +15,7 @@ repositories {
 
 dependencies {
 	implementation 'org.apache.camel:camel-spring-boot-starter:2.24.0'
+	implementation 'org.apache.camel:camel-kafka:2.24.0'
+	implementation 'org.apache.camel:camel-http4:2.24.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

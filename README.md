@@ -49,16 +49,16 @@ This guide assumes that the following software is properly installed and configu
 
 In many cases, the Scaler workflow(s) we will need to integrate with (invoke) will already exist. For this guide, we will create a simple workflow with only those items needed to prove the efficacy of the process.
 
-1. To begin, access the user interface for local instance of Scaler at [http://localhost:30600](http://localhost:30600).
+1. To begin, access the user interface for the local instance of Scaler at [http://localhost:30600](http://localhost:30600).
 
 2. Log in as an administrator and create a new *On Demand* workflow. Our example will be named *Simple Scaler Endpoint*.
 
 3. Using the workflow editor, add three Scaler workflow components in this order:
-   
+
    * HTTP Input
    * Script
    * HTTP Output
-  
+
    You can either drag and drop the components from the pallette to the canvas or just double-click them in the pallette to move them over. Once finished, make sure that the components are all linked together in the aforementioned order.
 
 ![Scaler workflow components linked](docs/images/scaler-workflow.png)
@@ -84,26 +84,26 @@ In many cases, the Scaler workflow(s) we will need to integrate with (invoke) wi
 
 For simplicity's sake, this section is written as though the [Docker demo environment](#using-the-docker-demo-environment) is being used. If this is not the case and you have your own Kafka/Zookeeper environment available, please adjust the command parameters below and throughout the rest of this guide as appropriate.
 
-Open a console window or command prompt and switch to the directory you installed Kafka to. To create a topic to use for passing messages to Scaler, run one of the following script with the supplied parameters based on your operating system:
+Before proceeding further, read the [Using the Docker Demo Environment](#using-the-docker-demo-environment) section and follow the instructions to start it up. Once the Kafka server is running, open a console window or command prompt and switch to the directory you installed Kafka to. To create a topic to use for passing messages to Scaler, run one of the following script with the supplied parameters based on your operating system:
 
-*MacOS & Linux* 
+*MacOS & Linux*
 ```console
 > bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic inspire --replication-factor 1 --partitions 1
 ```
 
-*Windows* 
+*Windows*
 ```console
 > bin\windows\kafka-topics.bat --bootstrap-server localhost:9092 --create --topic inspire --replication-factor 1 --partitions 1
 ```
 
-If you would like to verify that the topic was properly created, you can use the command with the `--list` parameter and you should see `inspire` listed among the output.
+If you would like to verify that the topic was properly created, you can use the command with the `--list` parameter and you should see **inspire** listed among the output.
 
-*MacOS & Linux* 
+*MacOS & Linux*
 ```console
 > bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
 ```
 
-*Windows* 
+*Windows*
 ```console
 > bin\windows\kafka-topics.bat --bootstrap-server localhost:9092 --list
 ```
@@ -113,7 +113,7 @@ As mentioned previously, there is an option to use a Docker container based on t
 ```console
 > docker run --rm --network kafka-demo confluentinc/cp-kafka \
 >   kafka-topics --zookeeper zookeeper:2181 --create \
->   --topic inspire --replication-factor 1 --partitions 1 
+>   --topic inspire --replication-factor 1 --partitions 1
 ```
 
 **Important**: Because the [Confluent Platform](https://www.confluent.io/product/confluent-platform/) Docker image for Kafka defines three volume mount-points, each time a `docker run` command using the image is executed, three new Docker volumes are created. Even though these volumes are very small in size, this can lead to the creation of plethora of Docker volumes without an associated container. In order to make sure that these are cleaned up, use a Docker command similar to the following (adjust as appropriate for your operating system):
@@ -137,12 +137,72 @@ As mentioned previously, there is an option to use a Docker container based on t
 
 5. Click *Generate the project* to download a ZIP file containing the Spring Boot project structure and files that have been created according to the previous choices. Later on, we'll customize the project's configuration to build and run a Java application.
 
-6. Expand (unzip) the project to a directory on disk. This will now be referred to as the `${project_root}` directory.
+6. Expand (unzip) the project to a directory on disk. This will now be referred to as the `${project-root-dir}` or project root directory.
 
 
 ### Configure Apache Camel
 
-It is now time to add the specific configuration and logic that will connect Kafka to Scaler. A full overview of Apache Camel and its configuration would be a significant document in its own right, so it will have to fall outside the scope of this guide.
+[Apache Camel's](https://camel.apache.org) integration framework provides the mechanism we will use to connect Kafka and Scaler. Camel's routing and mediation engine is central to its power and flexibility. Using Camel's *route* idiom, we will define the system endpoints (*connector* configuration), how information (in the form of a *message*) will travel between them and what, if any, transformation and/or processing of the *message* might be required along the way.
+
+Before we can define the route, we need to add the Camel connectors we will be using with our system endpoints. Camel already has a connector build specifically for Kafka. For Scaler, we need to use a connector for one of the supported input methods and Camel has existing connectors for HTTP, JMS and RabbitMQ. We will use the HTTP connector based on version 4 of Apache's HTTP client.
+
+1. Using a text editor or Java development IDE, if you have one, edit the `build.gradle` file in the project's root directory. In the *dependency* section, copy duplicate the line that starts with *implementation* twice and modify the copied lines so that the section looks like the following:
+
+   ```
+   dependencies {
+	   implementation 'org.apache.camel:camel-spring-boot-starter:2.24.0'
+	   implementation 'org.apache.camel:camel-kafka:2.24.0'
+	   implementation 'org.apache.camel:camel-http4:2.24.0'
+	   testImplementation 'org.springframework.boot:spring-boot-starter-test'
+   }
+   ```
+
+   Save and close the file.
+
+3. Create a new sub-directory under the `${project-root-dir}/src/main/resources` directory named `camel`.
+
+4. Create a file named `routes.xml` in the `${project-root-dir}/src/main/resources/camel` directory and open it for editing.
+
+5. Copy and paste the route definition that follows into the editor:
+
+   ```
+   <routes xmlns="http://camel.apache.org/schema/spring">
+      <route id="kafka2scaler">
+         <from uri="kafka:{{kafka.consumer.topic}}?brokers={{kafka.brokers}}&amp;groupId={{kafka.consumer.groupId}}&amp;seekTo={{kafka.consumer.seekTo}}"/>
+         <log message="Kafka sent: [${body}]"/>
+         <to uri="http4:{{http.host}}:{{http.port}}{{http.resourceUrl}}?httpMethod={{http.method}}"/>
+         <log message="Scaler returned:[HTTP ${header.CamelHttpResponseCode}], Body:[${body}]"/>
+      </route>
+   </routes>
+   ```
+
+   Save and close the file.
+
+6. Rename the `application.properties` file under `${project-root-dir}/src/main/resources` to `application.yaml` and open it for editing.
+
+7. Copy and paste the application configuration information below into the editor:
+
+   ```
+   camel:
+     springboot:
+       main-run-controller: true
+
+   kafka:
+     brokers: localhost:9092
+     consumer:
+       topic: inspire
+       groupId: demo
+       seekTo: end
+
+   http:
+     host: localhost
+     port: 30600
+     resourceUrl: /rest/api/submit-job/simplews
+     method: POST
+   ```
+
+   Save and close the file.
+
 
 ### Build and Run the Application
 
@@ -154,7 +214,7 @@ Using a console windows or command prompt, switch to the project's root director
 
 Windows users can omit the `./` prefix on the command above. This is only required for MacOS and *nix platforms.
 
-If any errors are produced, recheck the changes made to the source files in the [previous section](#configure-apache-camel). Make sure the files have been saved before trying again.
+If everything is correct, you will see a `BUILD SUCCESSFUL` message once all of the dependencies are downloaded, the files are compiled and tests are run. If not and errors are produced, recheck the changes made to the source files in the [previous section](#configure-apache-camel). Make sure the files have been saved before trying again.
 
 When the application is compiled, we can now use the Spring Boot plugin to run the application directly.
 
@@ -162,7 +222,7 @@ When the application is compiled, we can now use the Spring Boot plugin to run t
 > ./gradlew bootRun
 ```
 
-As the application starts, several information messages will be logged to the console. Once connected to Kafka, the application will wait for a message to be published in the `inspire` topic.
+As the application starts, several information messages will be logged to the console. Once connected to Kafka, the application will wait for a message to be published in the **inspire** topic.
 
 ### Send a Message to Kafka
 
@@ -174,7 +234,7 @@ As the application starts, several information messages will be logged to the co
 
 In order to provide ready access to a Kafka environment for testing this integration, a Docker Compose file that creates a single-node instance of Apache Kafka along with an Apache Zookeeper server is included with the project assets. The Zookeeper server is required by Kafka to support many of the distributed features (leader elections, partitions, etc.).
 
-To start the demo environment, from a console terminal or command window in the project root directory, execute:
+To start the demo environment, from a console window or command prompt in the project root directory, execute:
 ```console
 > docker-compose up -d
 ```
