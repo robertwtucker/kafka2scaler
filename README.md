@@ -84,7 +84,7 @@ In many cases, the Scaler workflow(s) we will need to integrate with (invoke) wi
 
 For simplicity's sake, this section is written as though the [Docker demo environment](#using-the-docker-demo-environment) is being used. If this is not the case and you have your own Kafka/Zookeeper environment available, please adjust the command parameters below and throughout the rest of this guide as appropriate.
 
-Open a terminal window or command prompt and switch to the directory you installed Kafka to. To create a topic to use for passing messages to Scaler, run one of the following script with the supplied parameters based on your operating system:
+Open a console window or command prompt and switch to the directory you installed Kafka to. To create a topic to use for passing messages to Scaler, run one of the following script with the supplied parameters based on your operating system:
 
 *MacOS & Linux* 
 ```console
@@ -93,7 +93,7 @@ Open a terminal window or command prompt and switch to the directory you install
 
 *Windows* 
 ```console
-> bin\windows\kafka-topics.bat --bootstrap-server localhost:9092 --create --topic inspire --replication-factor 1 --partitions 1
+> bin\\windows\\kafka-topics.bat --bootstrap-server localhost:9092 --create --topic inspire --replication-factor 1 --partitions 1
 ```
 
 If you would like to verify that the topic was properly created, you can use the command with the `--list` parameter and you should see `inspire` listed among the output.
@@ -105,7 +105,7 @@ If you would like to verify that the topic was properly created, you can use the
 
 *Windows* 
 ```console
-> bin\windows\kafka-topics.bat --bootstrap-server localhost:9092 --list
+> bin\\windows\\kafka-topics.bat --bootstrap-server localhost:9092 --list
 ```
 
 As mentioned previously, there is an option to use a Docker container based on the same Kafka image used for the demo environment in lieu of installing Kafka's binary distribution. For example, to create the topic in Kafka, you could execute the following:
