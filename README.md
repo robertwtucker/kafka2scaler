@@ -51,9 +51,9 @@ In many cases, the Scaler workflow(s) we will need to integrate with (invoke) wi
 
 1. To begin, access the user interface for the local instance of Scaler at [http://localhost:30600](http://localhost:30600).
 
-2. Log in as an administrator and create a new *On Demand* workflow. Our example will be named *Simple Scaler Endpoint*.
+1. Log in as an administrator and create a new *On Demand* workflow. Our example will be named *Simple Scaler Endpoint*.
 
-3. Using the workflow editor, add three Scaler workflow components in this order:
+1. Using the workflow editor, add three Scaler workflow components in this order:
 
    * HTTP Input
    * Script
@@ -61,23 +61,23 @@ In many cases, the Scaler workflow(s) we will need to integrate with (invoke) wi
 
    You can either drag and drop the components from the pallette to the canvas or just double-click them in the pallette to move them over. Once finished, make sure that the components are all linked together in the aforementioned order.
 
-![Scaler workflow components linked](docs/images/scaler-workflow.png)
+   ![Scaler workflow components linked](docs/images/scaler-workflow.png)
 
 1. Edit the **HTTP Input** component. Enter *simplews* for the *URL Endpoint* and set the *API authentication group* to *no authentication*. Take note of the *Request URL*. We will need this information later in order to contact this workflow via HTTP. Be sure to click *OK* to close the component detail popup and not the *X* so that the changes made will be persisted in memory.
 
-![HTTP Input component](docs/images/http-input.png)
+   ![HTTP Input component](docs/images/http-input.png)
 
-5. Open the **Script** component. In the *Variables* tab, click the *Required* checkbox for the *body* variable.
+1. Open the **Script** component. In the *Variables* tab, click the *Required* checkbox for the *body* variable.
 
-6. Add a simple line of script, `console.info(getvar("body"))`, in the code area. This will allow us to see exactly what was passed to Scaler in the body of the HTTP request from the *Job* details once the request is completed. Click *OK* to close the window.
+1. Add a simple line of script, `console.info(getvar("body"))`, in the code area. This will allow us to see exactly what was passed to Scaler in the body of the HTTP request from the *Job* details once the request is completed. Click *OK* to close the window.
 
-![Script component](docs/images/script-component.png)
+   ![Script component](docs/images/script-component.png)
 
-7. Edit the **HTTP Output** component, setting the *Response Type* to *Confirmation (HTTP 204)* before clicking *OK*.
+1. Edit the **HTTP Output** component, setting the *Response Type* to *Confirmation (HTTP 204)* before clicking *OK*.
 
-8. At this point, our workflow is complete. Click the *disk* icon in the toolbar to save all of the in-memory changes to the database and the *up and right arrow* nearby to publish the initial draft of the workflow as version 1. Click *OK* to confirm.
+1. At this point, our workflow is complete. Click the *disk* icon in the toolbar to save all of the in-memory changes to the database and the *up and right arrow* nearby to publish the initial draft of the workflow as version 1. Click *OK* to confirm.
 
-9.  With the *Sample Scaler Endpoint* workflow selected in the *On Demand* workflows screen, click the *play* icon in the toolbar to deploy the workflow.
+1.  With the *Sample Scaler Endpoint* workflow selected in the *On Demand* workflows screen, click the *play* icon in the toolbar to deploy the workflow.
 
 
 ### Create a Topic in Apache Kafka
@@ -127,17 +127,17 @@ As mentioned previously, there is an option to use a Docker container based on t
 
 1. In the browser, navigate to the Spring Initializr at [https://start.spring.io](https://start.spring.io).
 
-![Spring Initializr](docs/images/spring-initializr.png)
+   ![Spring Initializr](docs/images/spring-initializr.png)
 
-2. Choose *Gradle Project* as the type of project and leave the *Language* and *Spring Boot* settings at their default.
+1. Choose *Gradle Project* as the type of project and leave the *Language* and *Spring Boot* settings at their default.
 
-3. Feel free to customize the name and description values in the *Project Metadata* section as appropriate. For the purposes of this walk-through, please do not change the *Packaging* or *Java* selections from *Jar* and *8*, respectively.
+1. Feel free to customize the name and description values in the *Project Metadata* section as appropriate. For the purposes of this walk-through, please do not change the *Packaging* or *Java* selections from *Jar* and *8*, respectively.
 
-4. In the *Dependencies* section, type in '`camel`' and click the plus sign to add *Apache Camel*.
+1. In the *Dependencies* section, type in '`camel`' and click the plus sign to add *Apache Camel*.
 
-5. Click *Generate the project* to download a ZIP file containing the Spring Boot project structure and files that have been created according to the previous choices. Later on, we'll customize the project's configuration to build and run a Java application.
+1. Click *Generate the project* to download a ZIP file containing the Spring Boot project structure and files that have been created according to the previous choices. Later on, we'll customize the project's configuration to build and run a Java application.
 
-6. Expand (unzip) the project to a directory on disk. This will now be referred to as the `${project-root-dir}` or project root directory.
+1. Expand (unzip) the project to a directory on disk. This will now be referred to as the `${project-root-dir}` or project root directory.
 
 
 ### Configure Apache Camel
@@ -146,7 +146,7 @@ As mentioned previously, there is an option to use a Docker container based on t
 
 Before we can define the route, we need to add the Camel connectors we will be using with our system endpoints. Camel already has a connector build specifically for Kafka. For Scaler, we need to use a connector for one of the supported input methods and Camel has existing connectors for HTTP, JMS and RabbitMQ. We will use the HTTP connector based on version 4 of Apache's HTTP client.
 
-1. Using a text editor or Java development IDE, if you have one, edit the `build.gradle` file in the project's root directory. In the *dependency* section, copy duplicate the line that starts with *implementation* twice and modify the copied lines so that the section looks like the following:
+1. Using a text editor or Java development IDE, if you have one, edit the `build.gradle` file in the project's root directory. In the *dependency* section,  duplicate the line that starts with *implementation* twice and modify the copied lines so that the section looks like the following:
 
    ```
    dependencies {
@@ -157,13 +157,13 @@ Before we can define the route, we need to add the Camel connectors we will be u
    }
    ```
 
-   Save and close the file.
+   The version numbers might have changed by the time you are reading this, so just use whatever is current. Save and close the file.
 
-3. Create a new sub-directory under the `${project-root-dir}/src/main/resources` directory named `camel`.
+1. Create a new sub-directory under the `${project-root-dir}/src/main/resources` directory named `camel`.
 
-4. Create a file named `routes.xml` in the `${project-root-dir}/src/main/resources/camel` directory and open it for editing.
+1. Create a file named `routes.xml` in the `${project-root-dir}/src/main/resources/camel` directory and open it for editing.
 
-5. Copy and paste the route definition that follows into the editor:
+1. Copy and paste the route definition that follows into the editor:
 
    ```
    <routes xmlns="http://camel.apache.org/schema/spring">
@@ -178,9 +178,9 @@ Before we can define the route, we need to add the Camel connectors we will be u
 
    Save and close the file.
 
-6. Rename the `application.properties` file under `${project-root-dir}/src/main/resources` to `application.yaml` and open it for editing.
+1. Rename the `application.properties` file under `${project-root-dir}/src/main/resources` to `application.yaml` and open it for editing.
 
-7. Copy and paste the application configuration information below into the editor:
+1. Copy and paste the application configuration information below into the editor:
 
    ```
    camel:
@@ -206,7 +206,7 @@ Before we can define the route, we need to add the Camel connectors we will be u
 
 ### Build and Run the Application
 
-Using a console windows or command prompt, switch to the project's root directory. If all of the steps in the [previous section](#configure-apache-camel) were completed correctly, we should be able to build and run our application. Use the Gradle build tool provided with the project to compile the source files.
+Using a console windows or command prompt, switch to the project's root directory. If all of the steps in the [previous section](#configure-apache-camel) were completed correctly, we should be able to build and run our application. Use the [Gradle](https://gradle.org) build tool provided with the project to compile the source files.
 
 ```
 > ./gradlew build
@@ -222,7 +222,7 @@ When the application is compiled, we can now use the Spring Boot plugin to run t
 > ./gradlew bootRun
 ```
 
-As the application starts, several information messages will be logged to the console. Once connected to Kafka, the application will wait for a message to be published in the **inspire** topic.
+As the application starts, several informational messages will be logged to the console. Once connected to Kafka, the application will wait for a message to be published in the **inspire** topic.
 
 ### Send a Message to Kafka
 
