@@ -51,9 +51,9 @@ In many cases, the Scaler workflow(s) we will need to integrate with (invoke) wi
 
 1. To begin, access the user interface for the local instance of Scaler at [http://localhost:30600](http://localhost:30600).
 
-1. Log in as an administrator and create a new *On Demand* workflow. Our example will be named *Simple Scaler Endpoint*.
+2. Log in as an administrator and create a new *On Demand* workflow. Our example will be named *Simple Scaler Endpoint*.
 
-1. Using the workflow editor, add three Scaler workflow components in this order:
+3. Using the workflow editor, add three Scaler workflow components in this order:
 
    * HTTP Input
    * Script
@@ -63,21 +63,21 @@ In many cases, the Scaler workflow(s) we will need to integrate with (invoke) wi
 
    ![Scaler workflow components linked](docs/images/scaler-workflow.png)
 
-1. Edit the **HTTP Input** component. Enter *simplews* for the *URL Endpoint* and set the *API authentication group* to *no authentication*. Take note of the *Request URL*. We will need this information later in order to contact this workflow via HTTP. Be sure to click *OK* to close the component detail popup and not the *X* so that the changes made will be persisted in memory.
+4. Edit the **HTTP Input** component. Enter *simplews* for the *URL Endpoint* and set the *API authentication group* to *no authentication*. Take note of the *Request URL*. We will need this information later in order to contact this workflow via HTTP. Be sure to click *OK* to close the component detail popup and not the *X* so that the changes made will be persisted in memory.
 
    ![HTTP Input component](docs/images/http-input.png)
 
-1. Open the **Script** component. In the *Variables* tab, click the *Required* checkbox for the *body* variable.
+5. Open the **Script** component. In the *Variables* tab, click the *Required* checkbox for the *body* variable.
 
-1. Add a simple line of script, `console.info(getvar("body"))`, in the code area. This will allow us to see exactly what was passed to Scaler in the body of the HTTP request from the *Job* details once the request is completed. Click *OK* to close the window.
+6. Add a simple line of script, `console.info(getvar("body"))`, in the code area. This will allow us to see exactly what was passed to Scaler in the body of the HTTP request from the *Job* details once the request is completed. Click *OK* to close the window.
 
    ![Script component](docs/images/script-component.png)
 
-1. Edit the **HTTP Output** component, setting the *Response Type* to *Confirmation (HTTP 204)* before clicking *OK*.
+7. Edit the **HTTP Output** component, setting the *Response Type* to *Confirmation (HTTP 204)* before clicking *OK*.
 
-1. At this point, our workflow is complete. Click the *disk* icon in the toolbar to save all of the in-memory changes to the database and the *up and right arrow* nearby to publish the initial draft of the workflow as version 1. Click *OK* to confirm.
+8. At this point, our workflow is complete. Click the *disk* icon in the toolbar to save all of the in-memory changes to the database and the *up and right arrow* nearby to publish the initial draft of the workflow as version 1. Click *OK* to confirm.
 
-1.  With the *Sample Scaler Endpoint* workflow selected in the *On Demand* workflows screen, click the *play* icon in the toolbar to deploy the workflow.
+9.  With the *Sample Scaler Endpoint* workflow selected in the *On Demand* workflows screen, click the *play* icon in the toolbar to deploy the workflow.
 
 
 ### Create a Topic in Apache Kafka
@@ -129,15 +129,15 @@ As mentioned previously, there is an option to use a Docker container based on t
 
    ![Spring Initializr](docs/images/spring-initializr.png)
 
-1. Choose *Gradle Project* as the type of project and leave the *Language* and *Spring Boot* settings at their default.
+2. Choose *Gradle Project* as the type of project and leave the *Language* and *Spring Boot* settings at their default.
 
-1. Feel free to customize the name and description values in the *Project Metadata* section as appropriate. For the purposes of this walk-through, please do not change the *Packaging* or *Java* selections from *Jar* and *8*, respectively.
+3. Feel free to customize the name and description values in the *Project Metadata* section as appropriate. For the purposes of this walk-through, please do not change the *Packaging* or *Java* selections from *Jar* and *8*, respectively.
 
-1. In the *Dependencies* section, type in '`camel`' and click the plus sign to add *Apache Camel*.
+4. In the *Dependencies* section, type in '`camel`' and click the plus sign to add *Apache Camel*.
 
-1. Click *Generate the project* to download a ZIP file containing the Spring Boot project structure and files that have been created according to the previous choices. Later on, we'll customize the project's configuration to build and run a Java application.
+5. Click *Generate the project* to download a ZIP file containing the Spring Boot project structure and files that have been created according to the previous choices. Later on, we'll customize the project's configuration to build and run a Java application.
 
-1. Expand (unzip) the project to a directory on disk. This will now be referred to as the `${project-root-dir}` or project root directory.
+6. Expand (unzip) the project to a directory on disk. This will now be referred to as the `${project-root-dir}` or project root directory.
 
 
 ### Configure Apache Camel
@@ -159,11 +159,11 @@ Before we can define the route, we need to add the Camel connectors we will be u
 
    The version numbers might have changed by the time you are reading this, so just use whatever is current. Save and close the file.
 
-1. Create a new sub-directory under the `${project-root-dir}/src/main/resources` directory named `camel`.
+2. Create a new sub-directory under the `${project-root-dir}/src/main/resources` directory named `camel`.
 
-1. Create a file named `routes.xml` in the `${project-root-dir}/src/main/resources/camel` directory and open it for editing.
+3. Create a file named `routes.xml` in the `${project-root-dir}/src/main/resources/camel` directory and open it for editing.
 
-1. Copy and paste the route definition that follows into the editor:
+4. Copy and paste the route definition that follows into the editor:
 
    ```
    <routes xmlns="http://camel.apache.org/schema/spring">
@@ -178,9 +178,9 @@ Before we can define the route, we need to add the Camel connectors we will be u
 
    Save and close the file.
 
-1. Rename the `application.properties` file under `${project-root-dir}/src/main/resources` to `application.yaml` and open it for editing.
+5. Rename the `application.properties` file under `${project-root-dir}/src/main/resources` to `application.yaml` and open it for editing.
 
-1. Copy and paste the application configuration information below into the editor:
+6. Copy and paste the application configuration information below into the editor:
 
    ```
    camel:
