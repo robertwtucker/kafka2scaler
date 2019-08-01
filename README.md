@@ -84,7 +84,7 @@ In many cases, the Scaler workflow(s) we will need to integrate with (invoke) wi
 
 For simplicity's sake, this section is written as though the [Docker demo environment](#using-the-docker-demo-environment) is being used. If this is not the case and you have your own Kafka/Zookeeper environment available, please adjust the command parameters below and throughout the rest of this guide as appropriate.
 
-Before proceeding further, read the [Using the Docker Demo Environment](#using-the-docker-demo-environment) section and follow the instructions to start it up. Once the Kafka server is running, open a console window or command prompt and switch to the directory you installed Kafka to. To create a topic to use for passing messages to Scaler, run one of the following script with the supplied parameters based on your operating system:
+Before proceeding further, read the [Using the Docker Demo Environment](#using-the-docker-demo-environment) section and follow the instructions to start it up. Once the Kafka server is running, open a terminal window or command prompt and switch to the directory you installed Kafka to. To create a topic to use for passing messages to Scaler, run one of the following scripts with the supplied parameters based on your operating system:
 
 *MacOS & Linux*
 ```console
@@ -222,19 +222,56 @@ When the application is compiled, we can now use the Spring Boot plugin to run t
 > ./gradlew bootRun
 ```
 
-As the application starts, several informational messages will be logged to the console. Once connected to Kafka, the application will wait for a message to be published in the **inspire** topic.
+As the application starts, several informational messages will be logged to the console. Once connected to Kafka, the application will wait for a message to be published to the **inspire** topic.
 
 ### Send a Message to Kafka
 
+With our application waiting to do work, it's now time to send (produce) a message to our Kafka topic for our application to consume. Open a new terminal window or command prompt and switch to the directory you installed Kafka in. To produce a message, run one of the following scripts with the supplied parameters based on your operating system:
+
+*MacOS & Linux*
+```
+> bin/kafka-console-producer.sh --broker-list localhost:9092 --topic inspire
+```
+
+*Windows*
+```console
+> bin\windows\kafka-console-producer.bat --broker-list localhost:9092 --topic inspire
+```
+
+This starts Kafka's Console Producer. Anything typed on the line will be sent to our topic on the Kafka server. At the prompt, type in a fictitions JSON payload and hit `Enter` to send it:
+
+```
+> {"data":{"name":"foo","value":"blah"}}
+```
+
+If you look back at the terminal window/command prompt running our Java application with Camel, you should see entries in the log similar to the image that follows:
+
+![Console Log Output](docs/images/log-output.png)
+
+You can exit the console producer by typing `Ctrl+C`.
 
 ### Verify Scaler Received the Message
 
+While the log output told us that Scaler returned `HTTP 204` like we configured it to, let's go ahead and verify that Scaler received the message in its entirety.
+
+1. Access the user interface for [the local Scaler instance](http://localhost:30600).
+
+2. Log on as an administrator and navigate to the *Job Monitoring* screen (*Jobs* tab).
+
+3. Under *Job ID*, click on the link for the most recently executed job for the *Simple Scaler Endpoint* workflow.
+
+4. Select the *Script* component in the *Job Details* window and the *Script Log* should show the JSON payload we sent to Kafka.
+
+   ![Job Details](docs/images/job-details.png)
+
+Aaand we're done! You have now successfully sent a message to Inspire Scaler via Apache Kafka! Congratulations!
 
 ## Using the Docker Demo Environment
 
 In order to provide ready access to a Kafka environment for testing this integration, a Docker Compose file that creates a single-node instance of Apache Kafka along with an Apache Zookeeper server is included with the project assets. The Zookeeper server is required by Kafka to support many of the distributed features (leader elections, partitions, etc.).
 
 To start the demo environment, from a console window or command prompt in the project root directory, execute:
+
 ```console
 > docker-compose up -d
 ```
