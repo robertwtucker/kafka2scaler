@@ -2,14 +2,14 @@
 
 ## Introduction
 
-With the advent of new industry paradigms (a.k.a. buzzwords) like "big data" and microservices architecture, many enterprise customers are starting to incorporate traditionally cloud-centric programming technologies and architectural components in their environments (whether that be on-prem, cloud or a hybrid of the two). Enterprise architects are realizing that wide streams of data need to be captured and processed in order to build the next generation of digital services like predictive analytics and artificial intelligence (AI). Over the last few years, [Apache Kafka](https://kafka.apache.org/) has been gaining popularity as a key component of these streaming data pipelines. As such, it is not uncommon to get queries from prospects' IT groups as to whether or not Quadient can integrate with Kafka. This article will provide a high-level overview and walkthrough of one such way Inspire Scaler and Apache Kafka could be integrated to work together.
+With the advent of new industry paradigms (AKA buzzwords) like big data and microservices architecture, many enterprise customers are starting to incorporate traditionally cloud-centric programming technologies and architectural components in their environments (whether that be on-prem, cloud or a hybrid of the two). Enterprise architects are realizing that wide streams of data need to be captured and processed in order to build the next generation of digital services like predictive analytics and artificial intelligence (AI). Over the last few years, [Apache Kafka](https://kafka.apache.org/) has been gaining popularity as a key component of these streaming data pipelines. As such, it is not uncommon to get queries from prospects' IT groups as to whether or not Quadient can integrate with Kafka. This article will provide a high-level overview and walkthrough of one such way Inspire Scaler and Apache Kafka could be integrated to work together.
 
 
 ## Solution Components
 
 ### Apache Kafka
 
-[Apache Kafka](https://kafka.apache.org) is a fault-tolerant, horizontally-scalable publish-subcribe message system designed to power distributed applications. Kafka was originally designed by engineers at [Linked In](https://www.linkedin.com) who were looking to process large amounts of event data from their web site and infrastructure in "real-time". To achieve the message volumes needed, Kafka forgoes some of the features associated with traditional publish-subscribe messaging systems like [ActiveMQ](https://activemq.apache.org) and [RabbitMQ](https://www.rabbitmq.com). In particular, Kafka does not assign individual IDs to messages so it cannot guarantee delivery of a particular message. It also does not track how many consumers there are for a particular topic and which messages have been read. The industry buzzword "Big Data" certainly applies here as companies like Linked In, [Twitter](https://twitter.com), [Netflix](https://www.netflix.com) and [AirBnB](https://www.airbnb.com) use Kafka at web-scale and report processing billions and even [trillions](https://www.confluent.io/blog/apache-kafka-hits-1-1-trillion-messages-per-day-joins-the-4-comma-club/) of messages per day.
+[Apache Kafka](https://kafka.apache.org) is a fault-tolerant, horizontally-scalable publish-subcribe message system designed to power distributed applications. Kafka was originally designed by engineers at [Linked In](https://www.linkedin.com) who were looking to process large amounts of event data from their web site and infrastructure in real-time. To achieve the message volumes needed, Kafka forgoes some of the features associated with traditional publish-subscribe messaging systems like [ActiveMQ](https://activemq.apache.org) and [RabbitMQ](https://www.rabbitmq.com). In particular, Kafka does not assign individual IDs to messages so it cannot guarantee delivery of a particular message. It also does not track how many consumers there are for a particular topic and which messages have been read. The industry buzzword "big data" certainly applies here as companies like Linked In, [Twitter](https://twitter.com), [Netflix](https://www.netflix.com) and [AirBnB](https://www.airbnb.com) use Kafka at web-scale and report processing billions and even [trillions](https://www.confluent.io/blog/apache-kafka-hits-1-1-trillion-messages-per-day-joins-the-4-comma-club/) of messages per day.
 
 
 ### Inspire Scaler
@@ -19,12 +19,12 @@ In terms of input, Scaler currently supports several types of inbound communicat
 
 ### Apache Camel
 
-[Apache Camel](https://camel.apache.org) is a framework focused on simplifying integration. Its core feature is a routing and mediation engine that allows developers to write their own routing rules that determine, among other things, where input (messages) will come from, how those messages will need to be processed and potentially transformed before being sent to their destination. Camel offers high-level abstractions that make it easy to interact with various systems using the same API regardless of the protocol or type(s) of data the systems are using. Camel has a strong community for only having been around since 2007 and, in fact, currently has support for over 80 protocols and data types out-of-the-box. Because of its strong support for routing, tranformation and orchestrion, Camel is often likened to a lightweight ESB (or Enterprise Service Bus), which it is not. In particular, it does not have its own container. For that, we'll use the component in the next section.
+[Apache Camel](https://camel.apache.org) is a framework focused on simplifying integration. Its core feature is a routing and mediation engine that allows developers to write their own routing rules that determine, among other things, where input (messages) will come from and how those messages will need to be processed and potentially transformed before being sent to their destination. Camel offers high-level abstractions that make it easy to interact with various systems using the same API regardless of the protocol or type(s) of data the systems are using. Camel has a strong community for only having been around since 2007 and, in fact, currently has support for over 80 protocols and data types out-of-the-box. Because of its strong support for routing, tranformation and orchestrion, Camel is often likened to a lightweight ESB (or Enterprise Service Bus), which it is not. In particular, it does not have its own container. For that, we'll use the component in the next section.
 
 
 ### Spring Boot
 
-The [Spring](https://spring.io) framework is a project that was started back in the early 2000s in order to reduce the complexity associated with developing Java J2EE (Java Enterprise) applciations. It achieves this by providing a comprehensive programming and configuration model for creating modern Java-based applications. [Spring Boot](https://spring.io/projects/spring-boot) is a more recently developed extension of the Spring framework that makes it easier than ever to set up, configure and run both simple and web-based Java applications. Spring Boot takes an opinionanted view of the Spring platform which allows it to reduce the boilerplate configuration required for setting up Spring applications. This frees up developers to worry less about the "plumbing" and allows them concentrate on what the application needs to do.
+The [Spring](https://spring.io) framework is a project that was started back in the early 2000s in order to reduce the complexity associated with developing Java J2EE (Java Enterprise) applciations. It achieves this by providing a comprehensive programming and configuration model for creating modern, Java-based applications. [Spring Boot](https://spring.io/projects/spring-boot) is a more recently developed extension of the Spring framework that makes it easier than ever to set up, configure and run both simple and web-based Java applications. Spring Boot takes an opinionanted view of the Spring platform which allows it to reduce the boilerplate configuration required for setting up Spring applications. This frees up developers to worry less about the "plumbing" and allows them concentrate on what the application needs to do.
 
 
 ## Solution Architecture
@@ -88,9 +88,9 @@ In many cases, the Scaler workflow(s) we will need to integrate with (invoke) wi
 
 ### Create a Topic in Apache Kafka
 
-For simplicity's sake, this section is written as though the [Docker demo environment](#using-the-docker-demo-environment) is being used. If this is not the case and you have your own Kafka/Zookeeper environment available, please adjust the command parameters below and throughout the rest of this guide as appropriate.
+For simplicity's sake, this section is written as though the [Docker demo environment](#using-the-docker-demo-environment) is being used. If this is not the case and you have your own Kafka/Zookeeper environment available, please adjust the command parameters below and throughout the rest of this guide, as appropriate.
 
-Before proceeding further, read the [Using the Docker Demo Environment](#using-the-docker-demo-environment) section and follow the instructions to start it up. Once the Kafka server is running, open a terminal window or command prompt and switch to the directory you installed Kafka to. To create a topic to use for passing messages to Scaler, run one of the following scripts with the supplied parameters based on your operating system:
+Before proceeding further, read the [Using the Docker Demo Environment](#using-the-docker-demo-environment) section and follow the instructions to start it up. Once the Kafka server is running, open a terminal window or command prompt and switch to the directory you installed Kafka in. To create a topic to use for passing messages to Scaler, run one of the following scripts with the supplied parameters based on your operating system:
 
 *MacOS & Linux*
 ```console
@@ -150,7 +150,7 @@ As mentioned previously, there is an option to use a Docker container based on t
 
 [Apache Camel's](https://camel.apache.org) integration framework provides the mechanism we will use to connect Kafka and Scaler. Using Camel's *route* idiom, we will define the system endpoints (*connector* configuration), how information (in the form of a *message*) will travel between them and what, if any, transformation and/or processing of the *message* might be required along the way.
 
-Before we can define the route, we need to add the Camel connectors we will be using with our system endpoints. Camel already has a connector built specifically for Kafka. For Scaler, we will use the HTTP connector based on Apache's HTTP client library version 4.
+Before we can define the route, we need to add the Camel connectors we will be using with our system endpoints. Camel already has a connector built specifically for Kafka. For Scaler, we will use the HTTP connector based on Apache's HTTP Client Library version 4.
 
 1. Using a text editor or Java development IDE, if you have one, edit the `build.gradle` file in the project's root directory. In the *dependency* section,  duplicate the line that starts with *implementation* twice and modify the copied lines so that the section looks like the following:
 
@@ -212,7 +212,7 @@ Before we can define the route, we need to add the Camel connectors we will be u
 
 ### Build and Run the Application
 
-Using a console windows or command prompt, switch to the project's root directory. If all of the steps in the [previous section](#configure-apache-camel) were completed correctly, we should be able to build and run our application. Use the [Gradle](https://gradle.org) build tool provided with the project to compile the source files.
+Using a terminal window or command prompt, switch to the project's root directory. If all of the steps in the [previous section](#configure-apache-camel) were completed correctly, we should be able to build and run our application. Use the [Gradle](https://gradle.org) build tool provided with the project to compile the source files.
 
 ```
 > ./gradlew build
@@ -245,7 +245,7 @@ With our application waiting to do work, it's now time to send (produce) a messa
 > bin\windows\kafka-console-producer.bat --broker-list localhost:9092 --topic inspire
 ```
 
-This starts Kafka's Console Producer. Anything typed on the line will be sent to our topic on the Kafka server. At the prompt, type in a fictitions JSON payload and hit `Enter` to send it:
+This starts Kafka's *Console Producer*. Anything typed on the line will be sent to our topic on the Kafka server. At the prompt, type in a fictitions JSON payload and hit `Enter` to send it:
 
 ```
 > {"data":{"name":"foo","value":"blah"}}
@@ -255,7 +255,7 @@ If you look back at the terminal window/command prompt running our Java applicat
 
 ![Console Log Output](docs/images/log-output.png)
 
-You can exit the console producer by typing `Ctrl+C`.
+You can exit the *Console Producer* by typing `Control+C`.
 
 
 ### Verify Scaler Received the Message
