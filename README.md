@@ -2,30 +2,36 @@
 
 ## Introduction
 
-Explain the purpose, provide an overview
+With the advent of new industry paradigms (a.k.a. buzzwords) like "big data" and microservices architecture, many enterprise customers are starting to incorporate traditionally cloud-centric programming technologies and architectural components in their environments (whether that be on-prem, cloud or a hybrid of the two). Enterprise architects are realizing that wide streams of data need to be captured and processed in order to build the next generation of digital services like predictive analytics and artificial intelligence (AI). Over the last few years, [Apache Kafka](https://kafka.apache.org/) has been gaining popularity as a key component of these streaming data pipelines. As such, it is not uncommon to get queries from prospects' IT groups as to whether or not Quadient can integrate with Kafka. This article will provide a high-level overview and walkthrough of one such way Inspire Scaler and Apache Kafka could be integrated to work together.
 
-## Solution Overview
 
-High-level description
+## Solution Components
 
-### Architecture
+### Apache Kafka
 
-Picture
+[Apache Kafka](https://kafka.apache.org) is a fault-tolerant, horizontally-scalable publish-subcribe message system designed to power distributed applications. Kafka was originally designed by engineers at [Linked In](https://www.linkedin.com) who were looking to process large amounts of event data from their web site and infrastructure in "real-time". To achieve the message volumes needed, Kafka forgoes some of the features associated with traditional publish-subscribe messaging systems like [ActiveMQ](https://activemq.apache.org) and [RabbitMQ](https://www.rabbitmq.com). In particular, Kafka does not assign individual IDs to messages so it cannot guarantee delivery of a particular message. It also does not track how many consumers there are for a particular topic and which messages have been read. The industry buzzword "Big Data" certainly applies here as companies like Linked In, [Twitter](https://twitter.com), [Netflix](https://www.netflix.com) and [AirBnB](https://www.airbnb.com) use Kafka at web-scale and report processing billions and even [trillions](https://www.confluent.io/blog/apache-kafka-hits-1-1-trillion-messages-per-day-joins-the-4-comma-club/) of messages per day.
 
-### Solution Components
 
-#### Apache Kafka
+### Inspire Scaler
 
-Blurb on Kafka
+In terms of input, Scaler currently supports several types of inbound communication options. If we eliminate the Quadient-specific channels and scheduled input, we are left with FTP, Hot-folder, HTTP, JMS and RabbitMQ. Given some of the specific [shortcomings identified with Kafka](#Apache-Kafka), JMS or RabbitMQ might make for good choices to increase reliability in a production environment. For the purpose of this guide, we'll use HTTP as our input channel to limit the amount of additional configuration and setup required in order to demonstrate interaction with Kafka.
 
-#### Apache Camel
 
-Blurb on Camel
+### Apache Camel
 
-#### Spring Boot
+[Apache Camel](https://camel.apache.org) is a framework focused on simplifying integration. Its core feature is a routing and mediation engine that allows developers to write their own routing rules that determine, among other things, where input (messages) will come from, how those messages will need to be processed and potentially transformed before being sent to their destination. Camel offers high-level abstractions that make it easy to interact with various systems using the same API regardless of the protocol or type(s) of data the systems are using. Camel has a strong community for only having been around since 2007 and, in fact, currently has support for over 80 protocols and data types out-of-the-box. Because of its strong support for routing, tranformation and orchestrion, Camel is often likened to a lightweight ESB (or Enterprise Service Bus), which it is not. In particular, it does not have its own container. For that, we'll use the component in the next section.
 
-Blurb on Spring
 
+### Spring Boot
+
+The [Spring](https://spring.io) framework is a project that was started back in the early 2000s in order to reduce the complexity associated with developing Java J2EE (Java Enterprise) applciations. It achieves this by providing a comprehensive programming and configuration model for creating modern Java-based applications. [Spring Boot](https://spring.io/projects/spring-boot) is a more recently developed extension of the Spring framework that makes it easier than ever to set up, configure and run both simple and web-based Java applications. Spring Boot takes an opinionanted view of the Spring platform which allows it to reduce the boilerplate configuration required for setting up Spring applications. This frees up developers to worry less about the "plumbing" and allows them concentrate on what the application needs to do.
+
+
+## Solution Architecture
+
+From an integration perspective, we will be using Camel to implement the [*Message Gateway* pattern](https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessagingGateway.html). As per the pattern, Camel handles all of the communication with Kafka so Scaler will not require any Kafka-specific code or configuration.
+
+![Messaging Gateway pattern](docs/images/messaging-gateway.png)
 
 ## How-To Guide
 
@@ -116,7 +122,7 @@ As mentioned previously, there is an option to use a Docker container based on t
 >   --topic inspire --replication-factor 1 --partitions 1
 ```
 
-**Important**: Because the [Confluent Platform](https://www.confluent.io/product/confluent-platform/) Docker image for Kafka defines three volume mount-points, each time a `docker run` command using the image is executed, three new Docker volumes are created. Even though these volumes are very small in size, this can lead to the creation of plethora of Docker volumes without an associated container. In order to make sure that these are cleaned up, use a Docker command similar to the following (adjust as appropriate for your operating system):
+**Important**: Because the [Confluent Platform](https://www.confluent.io/product/confluent-platform/) Docker image for Kafka defines three volume mount-points, each time a `docker run` command using the image is executed, three new Docker volumes are created. Even though these volumes are very small in size, this can lead to the creation of a plethora of Docker volumes without an associated container. Use a Docker command similar to the following (adjust as appropriate for your operating system) to make sure that these are cleaned up:
 
 ```console
 > docker volume rm $(docker ls -qf dangling=true)
@@ -142,9 +148,9 @@ As mentioned previously, there is an option to use a Docker container based on t
 
 ### Configure Apache Camel
 
-[Apache Camel's](https://camel.apache.org) integration framework provides the mechanism we will use to connect Kafka and Scaler. Camel's routing and mediation engine is central to its power and flexibility. Using Camel's *route* idiom, we will define the system endpoints (*connector* configuration), how information (in the form of a *message*) will travel between them and what, if any, transformation and/or processing of the *message* might be required along the way.
+[Apache Camel's](https://camel.apache.org) integration framework provides the mechanism we will use to connect Kafka and Scaler. Using Camel's *route* idiom, we will define the system endpoints (*connector* configuration), how information (in the form of a *message*) will travel between them and what, if any, transformation and/or processing of the *message* might be required along the way.
 
-Before we can define the route, we need to add the Camel connectors we will be using with our system endpoints. Camel already has a connector build specifically for Kafka. For Scaler, we need to use a connector for one of the supported input methods and Camel has existing connectors for HTTP, JMS and RabbitMQ. We will use the HTTP connector based on version 4 of Apache's HTTP client.
+Before we can define the route, we need to add the Camel connectors we will be using with our system endpoints. Camel already has a connector built specifically for Kafka. For Scaler, we will use the HTTP connector based on Apache's HTTP client library version 4.
 
 1. Using a text editor or Java development IDE, if you have one, edit the `build.gradle` file in the project's root directory. In the *dependency* section,  duplicate the line that starts with *implementation* twice and modify the copied lines so that the section looks like the following:
 
@@ -224,6 +230,7 @@ When the application is compiled, we can now use the Spring Boot plugin to run t
 
 As the application starts, several informational messages will be logged to the console. Once connected to Kafka, the application will wait for a message to be published to the **inspire** topic.
 
+
 ### Send a Message to Kafka
 
 With our application waiting to do work, it's now time to send (produce) a message to our Kafka topic for our application to consume. Open a new terminal window or command prompt and switch to the directory you installed Kafka in. To produce a message, run one of the following scripts with the supplied parameters based on your operating system:
@@ -250,6 +257,7 @@ If you look back at the terminal window/command prompt running our Java applicat
 
 You can exit the console producer by typing `Ctrl+C`.
 
+
 ### Verify Scaler Received the Message
 
 While the log output told us that Scaler returned `HTTP 204` like we configured it to, let's go ahead and verify that Scaler received the message in its entirety.
@@ -266,6 +274,16 @@ While the log output told us that Scaler returned `HTTP 204` like we configured 
 
 Aaand we're done! You have now successfully sent a message to Inspire Scaler via Apache Kafka! Congratulations!
 
+
+## Areas for Further Study and/or Investigation
+
+Obviously, a customer's production implementation will involve many more requirements and much more complexity than the simple proof of connectivity undertaken with this guide. Some areas for further investigation and validation are included in the sections below.
+
+### Calling Scaler with Authentication Enabled
+
+### Creating a Response Object in Scaler and Publishing it to Kafka
+
+
 ## Using the Docker Demo Environment
 
 In order to provide ready access to a Kafka environment for testing this integration, a Docker Compose file that creates a single-node instance of Apache Kafka along with an Apache Zookeeper server is included with the project assets. The Zookeeper server is required by Kafka to support many of the distributed features (leader elections, partitions, etc.).
@@ -277,10 +295,3 @@ To start the demo environment, from a console window or command prompt in the pr
 ```
 
 This will create a network and start both server instances in *daemon* or background mode. By default, Kafka's primary listener will be bound to port `9092` of the host machine (`localhost:9092`). Because of the peculiarities of networking with Docker, a second listener has been configured to run on port `29092`. If you plan to connect to the demo Kafka server from another container (internal to Docker, on the `kafka-demo` network), you will need to use `kafka:29092` for the commands or parameters that require supplying the address of the Kafka broker.
-
-
-## Areas for Further Study and/or Investigation
-
-### Calling Scaler with Authentication Enabled
-
-### Create a Response Object in Scaler and Publish it to Kafka
