@@ -14,3 +14,4 @@ http:
   port: 30600
   resourceUrl: /rest/api/submit-job/simplews
   method: POST
+  auth-header: Basic c3lzdGVtOlBhc3N3b3JkMQ==

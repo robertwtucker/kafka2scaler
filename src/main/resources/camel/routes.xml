@@ -2,6 +2,9 @@
     <route id="kafka2scaler">
         <from uri="kafka:{{kafka.consumer.topic}}?brokers={{kafka.brokers}}&amp;groupId={{kafka.consumer.groupId}}&amp;seekTo={{kafka.consumer.seekTo}}"/>
         <log message="Kafka sent: [${body}]"/>
+        <setHeader headerName="Authorization">
+          <constant>{{http.auth-header}}</constant>
+        </setHeader>
         <to uri="http4:{{http.host}}:{{http.port}}{{http.resourceUrl}}?httpMethod={{http.method}}"/>
         <log message="Scaler returned:[HTTP ${header.CamelHttpResponseCode}], Body:[${body}]"/>
     </route>

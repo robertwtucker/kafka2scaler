@@ -277,11 +277,58 @@ Aaand we're done! You have now successfully sent a message to Inspire Scaler via
 
 ## Areas for Further Study and/or Investigation
 
-Obviously, a customer's production implementation will involve many more requirements and much more complexity than the simple proof of connectivity undertaken with this guide. Some areas for further investigation and validation are included in the sections below.
+Obviously, a customer's production implementation will involve many more requirements and much more complexity than the simple proof of connectivity undertaken with this guide. Some areas for further investigation and future validation are included in the sections below.
+
 
 ### Calling Scaler with Authentication Enabled
 
+When Default authentication is enabled in Scaler, Camel's HTTP4 component configuration needs to change so that user credentials are passed with the request to Scaler. There are two ways to go about this.
+
+
+#### Option 1: Setting the Authorization Header
+While the mechanics are beyond the scope of this document, Camel's exchange of in/out parameters will generally preserve headers along the entire route and pass the set to each component. We can use this feature to set an HTTP Authorization header prior to invoking the HTTP4 component and it will pass this header to Scaler. For basic authentication, the Authorization header is expected to be formatted as:
+
+```
+Basic c3lzdGVtOlBhc3N3b3JkMQ==
+```
+
+where the string of characters following `"Basic "` is a base64-encoded value formed by encoding the username and password joined by a colon. This can be added to the HTTP section in the application configuration file (*application.yaml*) as shown below:
+
+```
+http:
+  auth-header: Basic c3lzdGVtOlBhc3N3b3JkMQ==
+```
+
+In the *routes.xml* file, add the following before line with the HTTP4 component:
+
+```
+<setHeader headerName="Authorization">
+  <constant>{{http.auth-header}}</constant>
+</setHeader>
+```
+
+
+#### Option 2: Setting Parameters in the URI
+
+If you would rather not work with base64-encoded values, the username and password to use can be included directly in the HTTP4 component's URI configration. With the username and password added to the application configuration file (*application.yaml*):
+
+```
+http:
+  username: system
+  password: Password1
+```
+
+the HTTP4 component in the *routes.xml* file can be modified as follows:
+
+```
+<to uri="http4:{{http.host}}:{{http.port}}{{http.resourceUrl}}?httpMethod={{http.method}}&amp;authUsername={{http.username}}&amp;authPassword={{http.password}}&amp;authenticationPreemptive=true"/>
+
+```
+
+
 ### Creating a Response Object in Scaler and Publishing it to Kafka
+
+{TBD}
 
 
 ## Using the Docker Demo Environment
