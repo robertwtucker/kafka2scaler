@@ -1,0 +1,17 @@
+camel:
+  springboot:
+    main-run-controller: true
+
+kafka:
+  brokers: kafka:29092
+  consumer:
+    topic: inspire
+    groupId: demo
+    seekTo: end
+
+http:
+  host: scaler
+  port: 30600
+  resourceUrl: /rest/api/submit-job/simplews
+  method: POST
+  auth-header: Basic c3lzdGVtOlBhc3N3b3JkMQ==

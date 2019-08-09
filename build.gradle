@@ -1,12 +1,13 @@
 plugins {
 	id 'org.springframework.boot' version '2.1.6.RELEASE'
 	id 'java'
+  id 'com.bmuschko.docker-spring-boot-application' version '4.10.0'
 }
 
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.quadient.spt'
-version = '1.0.0'
+version = '1.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 repositories {
@@ -18,4 +19,12 @@ dependencies {
 	implementation 'org.apache.camel:camel-kafka:2.24.0'
 	implementation 'org.apache.camel:camel-http4:2.24.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+docker {
+    springBootApplication {
+        baseImage = 'openjdk:8-alpine'
+        ports = []
+        jvmArgs = ['-Dspring.profiles.active=docker']
+    }
 }
