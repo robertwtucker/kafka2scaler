@@ -1,5 +1,18 @@
 # Integrating Apache Kafka with Inspire Scaler
 
+> ## Table of Contents
+> ### [Introduction](#introduction)
+> ### [Solution Components](#solution-components)
+> #### [Apache Kafka](#apache-kafka)
+> #### [Inspire Scaler](#inspire-scaler)
+> #### [Apache Camel](#apache-camel)
+> #### [Spring Boot](#spring-boot)
+> ### [Solution Architecture](#solution-architecture)
+> ### [How-To Guide](#how-to-guide)
+> ### [Areas for Further Study and/or Investigation](#areas-for-further-study-and/or-investigation)
+> ### [Using the Docker Demo Environment](#using-the-docker-demo-environment)
+
+
 ## Introduction
 
 With the advent of new industry paradigms (AKA buzzwords) like big data and microservices architecture, many enterprise customers are starting to incorporate traditionally cloud-centric programming technologies and architectural components in their environments (whether that be on-prem, cloud or a hybrid of the two). Enterprise architects are realizing that wide streams of data need to be captured and processed in order to build the next generation of digital services like predictive analytics and artificial intelligence (AI). Over the last few years, [Apache Kafka](https://kafka.apache.org/) has been gaining popularity as a key component of these streaming data pipelines. As such, it is not uncommon to get queries from prospects' IT groups as to whether or not Quadient can integrate with Kafka. This article will provide a high-level overview and walkthrough of one such way Inspire Scaler and Apache Kafka could be integrated to work together.
@@ -328,7 +341,7 @@ the HTTP4 component in the *routes.xml* file can be modified as follows:
 
 ### Creating a Response Object in Scaler and Publishing it to Kafka
 
-{TBD}
+\[TBD/Future\]
 
 
 ## Using the Docker Demo Environment
