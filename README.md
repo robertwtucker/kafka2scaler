@@ -48,8 +48,7 @@ From an integration perspective, we will be using Camel to implement the [*Messa
 
 ## How-To Guide
 
-The instructions in this section provide a step by step walk-through of creating and configuring a Spring Boot application using Apache Camel to provide a gateway to Inspire Scaler. A full copy of the completed project and its assets can be found LINK_HERE.
-
+The instructions in this section provide a step by step walk-through of creating and configuring a Spring Boot application using Apache Camel to provide a gateway to Inspire Scaler. A full copy of the completed project and its assets can be found LINK_HERE. This guide assumes that you already have a working Kafka/Zookeeper environment up and accessible from your local machine. If not, a [Docker demo environment](#using-the-docker-demo-environment) is provided. Should you wish to install and run Kafka directly on your local machine, please see the [Kafka Quickstart](https://kafka.apache.org/quickstart) tutorial for instructions.
 
 ### Pre-requisites
 
@@ -233,7 +232,7 @@ Using a terminal window or command prompt, switch to the project's root director
 
 Windows users can omit the `./` prefix on the command above. This is only required for MacOS and *nix platforms.
 
-If everything is correct, you will see a `BUILD SUCCESSFUL` message once all of the dependencies are downloaded, the files are compiled and tests are run. If not and errors are produced, recheck the changes made to the source files in the [previous section](#configure-apache-camel). Make sure the files have been saved before trying again.
+If everything is correct, you will see a `BUILD SUCCESSFUL` message once all of the dependencies are downloaded, the files are compiled and tests are run. If not and errors are produced, recheck the changes made to the source files in the [previous section](#configure-apache-camel). Ensure that no extra spaces were copied into the files. This is particularly important with the *application.yaml* file. Finally, make sure the files have been saved before trying again.
 
 When the application is compiled, we can now use the Spring Boot plugin to run the application directly.
 
