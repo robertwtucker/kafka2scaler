@@ -22,7 +22,7 @@ With the advent of new industry paradigms (AKA buzzwords) like big data and micr
 
 ### Apache Kafka
 
-[Apache Kafka](https://kafka.apache.org) is a fault-tolerant, horizontally-scalable publish-subcribe message system designed to power distributed applications. Kafka was originally designed by engineers at [Linked In](https://www.linkedin.com) who were looking to process large amounts of event data from their web site and infrastructure in real-time. To achieve the message volumes needed, Kafka forgoes some of the features associated with traditional publish-subscribe messaging systems like [ActiveMQ](https://activemq.apache.org) and [RabbitMQ](https://www.rabbitmq.com). In particular, Kafka does not assign individual IDs to messages so it cannot guarantee delivery of a particular message. It also does not track how many consumers there are for a particular topic and which messages have been read. The industry buzzword "big data" certainly applies here as companies like Linked In, [Twitter](https://twitter.com), [Netflix](https://www.netflix.com) and [AirBnB](https://www.airbnb.com) use Kafka at web-scale and report processing billions and even [trillions](https://www.confluent.io/blog/apache-kafka-hits-1-1-trillion-messages-per-day-joins-the-4-comma-club/) of messages per day.
+[Apache Kafka](https://kafka.apache.org) is a fault-tolerant, horizontally-scalable publish-subscribe message system designed to power distributed applications. Kafka was originally designed by engineers at [Linked In](https://www.linkedin.com) who were looking to process large amounts of event data from their web site and infrastructure in real-time. To achieve the message volumes needed, Kafka forgoes some of the features associated with traditional publish-subscribe messaging systems like [ActiveMQ](https://activemq.apache.org) and [RabbitMQ](https://www.rabbitmq.com). In particular, Kafka does not assign individual IDs to messages so it cannot guarantee delivery of a particular message. It also does not track how many consumers there are for a particular topic and which messages have been read. The industry buzzword "big data" certainly applies here as companies like Linked In, [Twitter](https://twitter.com), [Netflix](https://www.netflix.com) and [AirBnB](https://www.airbnb.com) use Kafka at web-scale and report processing billions and even [trillions](https://www.confluent.io/blog/apache-kafka-hits-1-1-trillion-messages-per-day-joins-the-4-comma-club/) of messages per day.
 
 
 ### Inspire Scaler
@@ -32,12 +32,12 @@ In terms of input, Scaler currently supports several types of inbound communicat
 
 ### Apache Camel
 
-[Apache Camel](https://camel.apache.org) is a framework focused on simplifying integration. Its core feature is a routing and mediation engine that allows developers to write their own routing rules that determine, among other things, where input (messages) will come from and how those messages will need to be processed and potentially transformed before being sent to their destination. Camel offers high-level abstractions that make it easy to interact with various systems using the same API regardless of the protocol or type(s) of data the systems are using. Camel has a strong community for only having been around since 2007 and, in fact, currently has support for over 80 protocols and data types out-of-the-box. Because of its strong support for routing, tranformation and orchestrion, Camel is often likened to a lightweight ESB (or Enterprise Service Bus), which it is not. In particular, it does not have its own container. For that, we'll use the component in the next section.
+[Apache Camel](https://camel.apache.org) is a framework focused on simplifying integration. Its core feature is a routing and mediation engine that allows developers to write their own routing rules that determine, among other things, where input (messages) will come from and how those messages will need to be processed and potentially transformed before being sent to their destination. Camel offers high-level abstractions that make it easy to interact with various systems using the same API regardless of the protocol or type(s) of data the systems are using. Camel has a strong community for only having been around since 2007 and, in fact, currently has support for over 80 protocols and data types out-of-the-box. Because of its strong support for routing, transformation and orchestration, Camel is often likened to a lightweight ESB (or Enterprise Service Bus), which it is not. In particular, it does not have its own container. For that, we'll use the component in the next section.
 
 
 ### Spring Boot
 
-The [Spring](https://spring.io) framework is a project that was started back in the early 2000s in order to reduce the complexity associated with developing Java J2EE (Java Enterprise) applciations. It achieves this by providing a comprehensive programming and configuration model for creating modern, Java-based applications. [Spring Boot](https://spring.io/projects/spring-boot) is a more recently developed extension of the Spring framework that makes it easier than ever to set up, configure and run both simple and web-based Java applications. Spring Boot takes an opinionanted view of the Spring platform which allows it to reduce the boilerplate configuration required for setting up Spring applications. This frees up developers to worry less about the "plumbing" and allows them concentrate on what the application needs to do.
+The [Spring](https://spring.io) framework is a project that was started back in the early 2000s in order to reduce the complexity associated with developing Java J2EE (Java Enterprise) applications. It achieves this by providing a comprehensive programming and configuration model for creating modern, Java-based applications. [Spring Boot](https://spring.io/projects/spring-boot) is a more recently developed extension of the Spring framework that makes it easier than ever to set up, configure and run both simple and web-based Java applications. Spring Boot takes an opinionated view of the Spring platform which allows it to reduce the boilerplate configuration required for setting up Spring applications. This frees up developers to worry less about the "plumbing" and allows them concentrate on what the application needs to do.
 
 
 ## Solution Architecture
@@ -48,13 +48,13 @@ From an integration perspective, we will be using Camel to implement the [*Messa
 
 ## How-To Guide
 
-The instructions in this section provide a step by step walk-through of creating and configuring a Spring Boot application using Apache Camel to provide a gateway to Inspire Scaler. A full copy of the completed project and its assets can be found LINK_HERE. This guide assumes that you already have a working Kafka/Zookeeper environment up and accessible from your local machine. If not, a [Docker demo environment](#using-the-docker-demo-environment) is provided. Should you wish to install and run Kafka directly on your local machine, please see the [Kafka Quickstart](https://kafka.apache.org/quickstart) tutorial for instructions.
+The instructions in this section provide a step-by-step guide to creating and configuring a Spring Boot application using Apache Camel to provide a gateway to Inspire Scaler. A full copy of the completed project and its assets can be found LINK_HERE. This guide assumes that you already have a working Kafka/Zookeeper environment up and accessible from your local machine. If not, a [Docker demo environment](#using-the-docker-demo-environment) is provided. Should you wish to install and run Kafka directly on your local machine, please see the [Kafka Quickstart](https://kafka.apache.org/quickstart) tutorial for instructions.
 
 ### Pre-requisites
 
 This guide assumes that the following software is properly installed and configured on the machine being used. For more information, please see the installation links provided.
 
-* A **Java JDK for version 8** with the latest updates. At the time of this writing, that is 8u222-b10. Given the recent change in [Oracle's licensing terms for Java](https://www.oracle.com/technetwork/java/javase/terms/license/javase-license.html) releases, there are new restrictions around what is permissable under the license and this has created a lot of uncertainty (i.e. What activities qualify as "development?"). As such, [Azul System's](https://www.azul.com) Zulu Community builds of OpenJDK provide a great cross-platform alternative. So, if you do not already have a JDK installed, see the [Zulu Community download page](https://www.azul.com/downloads/zulu-community/) to find the latest version 8 JDK for your platform.
+* A **Java JDK for version 8** with the latest updates. At the time of this writing, that is 8u222-b10. Given the recent change in [Oracle's licensing terms for Java](https://www.oracle.com/technetwork/java/javase/terms/license/javase-license.html) releases, there are new restrictions around what is permissible under the license and this has created a lot of uncertainty (i.e. What activities qualify as "development?"). As such, [Azul System's](https://www.azul.com) Zulu Community builds of OpenJDK provide a great cross-platform alternative. So, if you do not already have a JDK installed, see the [Zulu Community download page](https://www.azul.com/downloads/zulu-community/) to find the latest version 8 JDK for your platform.
 
 * **Inspire Scaler** running locally and using default port (30600). A remote Scaler server will work as long as the appropriate host name and port are substituted where *localhost:30600* is used in the instructions. This guide was created and tested with Scaler v12.5.0.18-FMAP.
 
@@ -77,7 +77,7 @@ In many cases, the Scaler workflow(s) we will need to integrate with (invoke) wi
    * Script
    * HTTP Output
 
-   You can either drag and drop the components from the pallette to the canvas or just double-click them in the pallette to move them over. Once finished, make sure that the components are all linked together in the aforementioned order.
+   You can either drag and drop the components from the palette to the canvas or just double-click them in the palette to move them over. Once finished, make sure that the components are all linked together in the aforementioned order.
 
    ![Scaler workflow components linked](docs/images/scaler-workflow.png)
 
@@ -230,7 +230,7 @@ Using a terminal window or command prompt, switch to the project's root director
 > ./gradlew build
 ```
 
-Windows users can omit the `./` prefix on the command above. This is only required for MacOS and *nix platforms.
+Windows users can omit the '`./`' prefix on the command above. This is only required for MacOS and *nix platforms.
 
 If everything is correct, you will see a `BUILD SUCCESSFUL` message once all of the dependencies are downloaded, the files are compiled and tests are run. If not and errors are produced, recheck the changes made to the source files in the [previous section](#configure-apache-camel). Ensure that no extra spaces were copied into the files. This is particularly important with the *application.yaml* file. Finally, make sure the files have been saved before trying again.
 
@@ -257,7 +257,7 @@ With our application waiting to do work, it's now time to send (produce) a messa
 > bin\windows\kafka-console-producer.bat --broker-list localhost:9092 --topic inspire
 ```
 
-This starts Kafka's *Console Producer*. Anything typed on the line will be sent to our topic on the Kafka server. At the prompt, type in a fictitions JSON payload and hit `Enter` to send it:
+This starts Kafka's *Console Producer*. Anything typed on the line will be sent to our topic on the Kafka server. At the prompt, type in a fictitious JSON payload and hit `Enter` to send it:
 
 ```
 > {"data":{"name":"foo","value":"blah"}}
@@ -322,7 +322,7 @@ In the *routes.xml* file, add the following before line with the HTTP4 component
 
 #### Option 2: Setting Parameters in the URI
 
-If you would rather not work with base64-encoded values, the username and password to use can be included directly in the HTTP4 component's URI configration. With the username and password added to the application configuration file (*application.yaml*):
+If you would rather not work with base64-encoded values, the username and password to use can be included directly in the HTTP4 component's URI configuration. With the username and password added to the application configuration file (*application.yaml*):
 
 ```
 http:
