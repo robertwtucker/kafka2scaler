@@ -16,7 +16,7 @@ The article assumes that the following software is properly installed and config
 
 ## Roadmap
 
-See the [open issues](https://github.com/robertwtucker/scaler2kafka-demo/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/robertwtucker/kafka2scaler-demo/issues) for a list of proposed features (and known issues).
 
 ## Contributing
 
@@ -34,7 +34,7 @@ Copyright (c) 2019 Quadient Group AG and distributed under the MIT License. See 
 ## Contact
 Robert Tucker - [@robertwtucker](https://twitter.com/robertwtucker)
 
-Project Link: [https://github.com/robertwtucker/scaler2kafka-demo](https://github.com/robertwtucker/scaler2kafka-demo)
+Project Link: [https://github.com/robertwtucker/kafka2scaler-demo](https://github.com/robertwtucker/kafka2scaler-demo)
 
 ## Acknowledgements
 
